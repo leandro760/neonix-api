@@ -26,21 +26,34 @@ public class CartService {
             });
         cartItem.setCart(cart);
         // Aquí podrías agregar lógica para validar o calcular totales
-        return cartRepository.save(cart).getItems().add(cartItem); // Nota: Ajusta según tu implementación de CartItem
+        cart.getItems().add(cartItem); // Agrega el item al carrito
+        cartRepository.save(cart); // Guarda el carrito actualizado
+        return cartItem; // Retorna el CartItem agregado
     }
 
     public Optional<CartItem> updateCartItem(String userId, Long itemId, CartItem cartItem) {
         Cart cart = cartRepository.findByUserId(userId)
             .orElseThrow(() -> new RuntimeException("Cart not found for user: " + userId));
-        // Lógica para encontrar y actualizar el item (ajusta según tu modelo)
-        return Optional.empty(); // Implementa la lógica para actualizar
+        // Lógica para encontrar y actualizar el item
+        for (CartItem item : cart.getItems()) {
+            if (item.getId().equals(itemId)) {
+                item.setQuantity(cartItem.getQuantity());
+                item.setProduct(cartItem.getProduct());
+                cartRepository.save(cart);
+                return Optional.of(item);
+            }
+        }
+        return Optional.empty(); // Si no se encuentra el item
     }
 
     public boolean removeItemFromCart(String userId, Long itemId) {
         Cart cart = cartRepository.findByUserId(userId)
             .orElseThrow(() -> new RuntimeException("Cart not found for user: " + userId));
-        // Lógica para remover el item (ajusta según tu modelo)
-        return true; // Implementa la lógica para remover
+        boolean removed = cart.getItems().removeIf(item -> item.getId().equals(itemId));
+        if (removed) {
+            cartRepository.save(cart);
+        }
+        return removed;
     }
 
     public boolean clearCart(String userId) {
