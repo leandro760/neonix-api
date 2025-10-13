@@ -10,10 +10,10 @@ import java.time.LocalDateTime;
 public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer documentTypeId;
+    private Integer Id;
 
     @Column(name = "document_type", nullable = false)
-    private String documentType;
+    private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "clerk_user_id", referencedColumnName = "clerk_user_id")

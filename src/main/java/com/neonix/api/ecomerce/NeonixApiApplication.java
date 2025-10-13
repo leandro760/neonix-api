@@ -9,3 +9,4 @@ public class NeonixApiApplication {
         SpringApplication.run(NeonixApiApplication.class, args);
     }
 }
+

@@ -28,7 +28,7 @@ public class DocumentService {
         Optional<Document> documentOptional = documentRepository.findById(id);
         if (documentOptional.isPresent()) {
             Document existingDocument = documentOptional.get();
-            existingDocument.setDocumentType(documentDetails.getDocumentType());
+            existingDocument.setName(documentDetails.getName());
             existingDocument.setDocumentData(documentDetails.getDocumentData());
             existingDocument.setUser(documentDetails.getUser()); // Si el user puede cambiar
             return documentRepository.save(existingDocument);

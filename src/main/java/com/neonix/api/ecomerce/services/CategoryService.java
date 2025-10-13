@@ -28,7 +28,7 @@ public class CategoryService {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (categoryOptional.isPresent()) {
             Category existingCategory = categoryOptional.get();
-            existingCategory.setCategory(categoryDetails.getCategory());
+            existingCategory.setName(categoryDetails.getName());
             existingCategory.setDescription(categoryDetails.getDescription());
             return categoryRepository.save(existingCategory);
         }
