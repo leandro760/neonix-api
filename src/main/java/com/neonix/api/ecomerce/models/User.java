@@ -1,26 +1,55 @@
 package com.neonix.api.ecomerce.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Data;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "Users")
+@Data
 public class User {
     @Id
-    private String id;  // ID de Clerk
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer userId;
 
-    private String email;
+    @Column(name = "clerk_user_id", unique = true, nullable = false)
+    private String clerkUserId;
 
-    private String name;
+    @Column(nullable = false)
+    private String fullname;
 
-    private String password;
+    private String phone;
 
-    // Getters y Setters
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
+
+    @Column(name = "registration_date", updatable = false)
+    private LocalDateTime registrationDate;
+
+    private String address;
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        if (registrationDate == null) {
+            registrationDate = LocalDateTime.now();
+        }
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+        if (updatedAt == null) {
+            updatedAt = LocalDateTime.now();
+        }
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

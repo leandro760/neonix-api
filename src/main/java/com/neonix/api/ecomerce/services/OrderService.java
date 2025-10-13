@@ -4,8 +4,6 @@ import com.neonix.api.ecomerce.models.Order;
 import com.neonix.api.ecomerce.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,44 +12,33 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    public List<Order> findOrdersByUserId(String userId) {
-        return orderRepository.findByUserId(userId);
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
     }
 
-    public Optional<Order> getOrderById(Long id) {
+    public Optional<Order> getOrderById(Integer id) {
         return orderRepository.findById(id);
     }
 
     public Order createOrder(Order order) {
-        order.setOrderDate(LocalDateTime.now());
-        order.setStatus("PENDING"); // Estado inicial
         return orderRepository.save(order);
     }
 
-    public Optional<Order> confirmOrder(Long id) {
-        return orderRepository.findById(id)
-            .map(order -> {
-                order.setStatus("CONFIRMED");
-                return orderRepository.save(order);
-            });
+    public Order updateOrder(Integer id, Order orderDetails) {
+        Optional<Order> orderOptional = orderRepository.findById(id);
+        if (orderOptional.isPresent()) {
+            Order existingOrder = orderOptional.get();
+            existingOrder.setShippingNumber(orderDetails.getShippingNumber());
+            existingOrder.setDeliveryDate(orderDetails.getDeliveryDate());
+            existingOrder.setOrderValue(orderDetails.getOrderValue());
+            existingOrder.setStatus(orderDetails.getStatus());
+            existingOrder.setUser(orderDetails.getUser()); // Si el usuario de la orden puede cambiar
+            return orderRepository.save(existingOrder);
+        }
+        return null;
     }
 
-    public Optional<Order> updateOrder(Long id, Order order) {
-        return orderRepository.findById(id)
-            .map(existingOrder -> {
-                existingOrder.setShippingAddress(order.getShippingAddress());
-                existingOrder.setPayment(order.getPayment());
-                // Actualiza otros campos si es necesario
-                return orderRepository.save(existingOrder);
-            });
-    }
-
-    public boolean cancelOrder(Long id) {
-        return orderRepository.findById(id)
-            .map(order -> {
-                order.setStatus("CANCELLED");
-                orderRepository.save(order);
-                return true;
-            }).orElse(false);
+    public void deleteOrder(Integer id) {
+        orderRepository.deleteById(id);
     }
 }

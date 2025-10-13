@@ -1,29 +1,33 @@
 package com.neonix.api.ecomerce.models;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "Categories")
+@Data
 public class Category {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_id")
-    private Long id;
+    private Integer categoryId;
 
-    @Column(name = "category_name", nullable = false, length = 100)
-    @jakarta.validation.constraints.NotBlank
-    private String nombre;
+    @Column(nullable = false)
+    private String category;
 
-    public Category() {}
+    private String description;
 
-    public Category(String nombre) {
-        this.nombre = nombre;
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "category")
+    private List<Product> products;
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
     }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
 }

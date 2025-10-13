@@ -9,33 +9,37 @@ import java.util.Optional;
 
 @Service
 public class ProductService {
-
     @Autowired
-    private ProductRepository repository;
+    private ProductRepository productRepository;
 
     public List<Product> getAllProducts() {
-        return repository.findAll();
+        return productRepository.findAll();
     }
 
-    public Product saveProduct(Product product) {
-        return repository.save(product);
+    public Optional<Product> getProductById(Integer id) {
+        return productRepository.findById(id);
     }
 
-    public Optional<Product> getProductById(Long id) {
-        return repository.findById(id);
+    public Product createProduct(Product product) {
+        return productRepository.save(product);
     }
 
-    public Product updateProduct(Long id, Product productDetails) {
-        Product product = repository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
-        product.setNombre(productDetails.getNombre());
-        product.setDescripcion(productDetails.getDescripcion());
-        product.setPrecio(productDetails.getPrecio());
-        product.setStock(productDetails.getStock());
-        product.setCategory(productDetails.getCategory());
-        return repository.save(product);
+    public Product updateProduct(Integer id, Product productDetails) {
+        Optional<Product> productOptional = productRepository.findById(id);
+        if (productOptional.isPresent()) {
+            Product existingProduct = productOptional.get();
+            existingProduct.setProductName(productDetails.getProductName());
+            existingProduct.setDescription(productDetails.getDescription());
+            existingProduct.setPrice(productDetails.getPrice());
+            existingProduct.setCountInStock(productDetails.getCountInStock());
+            existingProduct.setCategory(productDetails.getCategory());
+            existingProduct.setImageUrl(productDetails.getImageUrl());
+            return productRepository.save(existingProduct);
+        }
+        return null;
     }
 
-    public void deleteProduct(Long id) {
-        repository.deleteById(id);
+    public void deleteProduct(Integer id) {
+        productRepository.deleteById(id);
     }
 }
