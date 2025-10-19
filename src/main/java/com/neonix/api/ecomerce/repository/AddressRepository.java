@@ -1,12 +1,12 @@
 package com.neonix.api.ecomerce.repository;
 
-import com.neonix.api.ecomerce.models.Order;
+import com.neonix.api.ecomerce.models.Address;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Integer> {
-    List<Order> findByUserId(Integer userId);
+public interface AddressRepository extends JpaRepository<Address, Integer> {
+    List<Address> findByUserId(Integer userId);
 }

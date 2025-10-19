@@ -1,16 +1,17 @@
 package com.neonix.api.ecomerce.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "OrderDetails")
-@Data
+@Table(name = "orderdetails", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"order_id", "product_id"})
+})
 public class OrderDetail {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer orderDetailId;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
@@ -20,16 +21,58 @@ public class OrderDetail {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(nullable = false)
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @Column(name = "sale_price", nullable = false)
-    private BigDecimal salePrice;
+    @Column(name = "price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_method_id")
-    private PaymentMethod paymentMethod;
+    // Getters y Setters
+    public Integer getId() {
+        return id;
+    }
 
-    @Column(name = "order_number", nullable = false)
-    private Integer orderNumber; // Asumo que este campo tiene un propósito específico dentro del detalle.
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public Object getPaymentMethod() {
+        throw new UnsupportedOperationException("Unimplemented method 'getPaymentMethod'");
+    }
+
+    public void setPaymentMethod(Object paymentMethod) {
+        throw new UnsupportedOperationException("Unimplemented method 'setPaymentMethod'");
+    }
 }

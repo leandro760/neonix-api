@@ -1,43 +1,89 @@
 package com.neonix.api.ecomerce.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "PaymentMethods")
-@Data
+@Table(name = "paymentmethods")
 public class PaymentMethod {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer paymentMethodId;
+    private Integer id;
 
-    @Column(name = "payment_method", nullable = false)
-    private String paymentMethod;
+    @Column(name = "name", nullable = false, unique = true)
+    private String name;
 
+    @Column(name = "description")
     private String description;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "clerk_user_id", referencedColumnName = "clerk_user_id")
-    private User user; // Relación con Users.clerk_user_id
 
     @Column(name = "is_active")
     private Boolean isActive;
 
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "paymentMethod")
-    private List<OrderDetail> orderDetails;
+    @OneToMany(mappedBy = "paymentMethod", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Order> orders = new HashSet<>();
 
-    @PrePersist
-    protected void onCreate() {
-        if (createdAt == null) {
-            createdAt = LocalDateTime.now();
-        }
-        if (isActive == null) {
-            isActive = true;
-        }
+    // Getters y Setters
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean active) {
+        isActive = active;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
+    }
+
+    public Object getUser() {
+    
+        throw new UnsupportedOperationException("Unimplemented method 'getUser'");
+    }
+
+    public void setUser(Object user) {
+    
+        throw new UnsupportedOperationException("Unimplemented method 'setUser'");
     }
 }
