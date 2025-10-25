@@ -16,26 +16,40 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // Agrega CORS aquí (nuevo: integra CORS con Security)
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/public/**").permitAll() 
-                .requestMatchers("/api/categories").permitAll() 
-                .requestMatchers("/api/products").permitAll()   
-                .requestMatchers("/").permitAll()  // NUEVO: Permite la raíz / para pruebas (evita 401 en localhost:8080/)
-                .requestMatchers("/health").permitAll()  // NUEVO: Permite /health si lo usas para checks
-                .requestMatchers("/actuator/**").permitAll()  // NUEVO: Si usas Spring Actuator
-                .anyRequest().authenticated()
-            )
-            .oauth2ResourceServer(oauth2 -> oauth2
-                .jwt(jwt -> jwt.decoder(jwtDecoder()))  // Pequeño fix: usa .decoder() en lugar de jwtDecoder()
-            );
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
+            .anyRequest().permitAll()  // 🔹 Permite TODO sin autenticación
+        )
+        .oauth2ResourceServer(oauth2 -> oauth2.disable()) // 🔹 Desactiva el servidor OAuth2
+        .formLogin(login -> login.disable())               // 🔹 Sin formulario de login
+        .httpBasic(basic -> basic.disable());              // 🔹 Sin autenticación básica
+    return http.build();
+}
 
-        return http.build();
-    }
+    // @Bean
+    // public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    //     http
+    //         .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // Agrega CORS aquí (nuevo: integra CORS con Security)
+    //         .csrf(csrf -> csrf.disable())
+    //         .authorizeHttpRequests(authorize -> authorize
+    //             .requestMatchers("/api/public/**").permitAll() 
+    //             .requestMatchers("/api/categories").permitAll() 
+    //             .requestMatchers("/api/products").permitAll()   
+    //             .requestMatchers("/").permitAll()  // NUEVO: Permite la raíz / para pruebas (evita 401 en localhost:8080/)
+    //             .requestMatchers("/health").permitAll()  // NUEVO: Permite /health si lo usas para checks
+    //             .requestMatchers("/actuator/**").permitAll()  // NUEVO: Si usas Spring Actuator
+    //             .anyRequest().authenticated()
+    //         )
+    //         .oauth2ResourceServer(oauth2 -> oauth2
+    //             .jwt(jwt -> jwt.decoder(jwtDecoder()))  // Pequeño fix: usa .decoder() en lugar de jwtDecoder()
+    //         );
+
+    //     return http.build();
+    // }
 
     @Bean
     public JwtDecoder jwtDecoder() {

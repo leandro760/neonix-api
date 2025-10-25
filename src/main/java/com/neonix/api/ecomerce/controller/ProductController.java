@@ -27,9 +27,9 @@ public class ProductController {
         this.categoryRepository = categoryRepository;
     }
 
-    @GetMapping
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+     @GetMapping
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.status(HttpStatus.OK).body(productRepository.findAll());
     }
 
     @GetMapping("/{id}")
@@ -40,7 +40,6 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
-        // Resuelve categoría por ID si se proporciona
         if (product.getCategory() != null && product.getCategory().getId() != null) {
             Optional<Category> categoryOpt = categoryRepository.findById(product.getCategory().getId());
             if (categoryOpt.isEmpty()) {
