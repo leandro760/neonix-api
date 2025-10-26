@@ -22,7 +22,8 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-            .anyRequest().permitAll()  
+        .anyRequest().permitAll()
+
         )
         .oauth2ResourceServer(oauth2 -> oauth2.disable()) // 🔹 Desactiva el servidor OAuth2
         .formLogin(login -> login.disable())               // 🔹 Sin formulario de login
