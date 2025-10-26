@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +38,8 @@ public class DatabaseSeeder implements CommandLineRunner {
             return existingCategory.get();
         } else {
             Category newCategory = new Category(name, description);
+            // ✅ Agregamos createdAt automáticamente para evitar el error
+            newCategory.setCreatedAt(LocalDateTime.now());
             categoryRepository.save(newCategory);
             return newCategory;
         }
@@ -93,10 +96,10 @@ public class DatabaseSeeder implements CommandLineRunner {
 
             // Accesorios
             createProduct("Gorra Concrete", "Gorra Concrete.", "50000.00", 100, accesoriosCategory, "https://res.cloudinary.com/ddzetix8t/image/upload/Gorra_Concrete_lkid5q.png"),
-            createProduct("Mochila Urban Pack", "Mochila Urban Pack.", "120000.00", 100, accesoriosCategory, "https://res.cloudinary.com/ddzetix8t/image/upload/Mochila_Urban_Pack_fjlsbf.png"),
-            createProduct("Gorra Night Vibe", "Gorra Night Vibe.", "50000.00", 100, accesoriosCategory, "https://res.cloudinary.com/ddzetix8t/image/upload/Set_Midnight_Drop_quaube.png"),
-            createProduct("Mochila Metroline", "Mochila Metroline.", "120000.00", 100, accesoriosCategory, "https://res.cloudinary.com/ddzetix8t/image/upload/Mochila_Metroline_fmrugx.png"),
-            createProduct("Cinturón Urban Flex", "Cinturón Urban Flex.", "40000.00", 100, accesoriosCategory, "https://res.cloudinary.com/ddzetix8t/image/upload/Cinturon_Urban_Flex_pflru0.png")
+            createProduct("Medias urbanas", "Medias Urbanas.", "40000.00", 100, accesoriosCategory, "https://res.cloudinary.com/ddzetix8t/image/upload/v1761494880/Medias_Urban_Stride_my5app.jpg"),
+            createProduct("Gorra Night Vibe", "Gorra Night Vibe.", "50000.00", 100, accesoriosCategory, "https://res.cloudinary.com/ddzetix8t/image/upload/v1758805981/Gorro_Loop_snwxuq.jpg"),
+            createProduct("Gafas de Sol", "Gafas de Sol.", "150000.00", 100, accesoriosCategory, "https://res.cloudinary.com/ddzetix8t/image/upload/v1761494926/Lentes_Block_Shades_kvowjf.jpg"),
+            createProduct("Canguro Urban", "Canguro Urban.", "100000.00", 100, accesoriosCategory, "https://res.cloudinary.com/ddzetix8t/image/upload/v1761494818/Ri%C3%B1onera_Core_Side_Bag_rm4sfj.jpg")
         );
 
         // Guardar todos los productos en la base de datos
